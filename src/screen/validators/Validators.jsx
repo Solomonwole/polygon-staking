@@ -20,7 +20,13 @@ function Validators() {
       </Box>
 
       <Container>
-        <AllValidators />
+        <Box
+          sx={{
+            marginTop: "-90px",
+          }}
+        >
+          <AllValidators />
+        </Box>
       </Container>
     </Box>
   );

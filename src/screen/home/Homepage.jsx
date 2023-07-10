@@ -185,6 +185,9 @@ function Homepage() {
 
           {/* All Validators  */}
           <Container>
+            <Typography variant="h1" sx={{ marginTop: "50px", color: "#000" }}>
+              All Validators
+            </Typography>
             <AllValidators />
           </Container>
         </Box>

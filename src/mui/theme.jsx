@@ -46,8 +46,8 @@ const theme = createTheme({
       fontWeight: 500,
     },
     h4: {
-      fontSize: "20px",
-      fontWeight: 500,
+      fontSize: "16px",
+      fontWeight: 800,
     },
     h5: {
       fontSize: "20px",
