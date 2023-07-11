@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { ThemeProvider } from "@mui/material/styles";
 import PageRoutes from "./router/PageRoutes";
 import theme from "./mui/theme";
+import { Box } from "@mui/material";
 
 function App() {
   useEffect(() => {
@@ -9,7 +10,13 @@ function App() {
   }, []);
   return (
     <ThemeProvider theme={theme}>
-      <PageRoutes />
+      <Box
+        sx={{
+          overflowX: "hidden",
+        }}
+      >
+        <PageRoutes />
+      </Box>
     </ThemeProvider>
   );
 }

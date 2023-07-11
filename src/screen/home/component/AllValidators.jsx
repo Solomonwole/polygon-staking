@@ -132,12 +132,13 @@ function AllValidators() {
             options={filterDrop}
             value={filterOption}
             onChange={handleFilterChange}
-            sx={{ width: 300, textTransform: "capitalize" }}
+            sx={{ width: { xs: 100, sm: 300 }, textTransform: "capitalize" }}
             renderInput={(params) => <TextField {...params} label="filter" />}
           />
 
           <IconButton
             sx={{
+              display: { xs: "none", sm: "flex" },
               border: "2px solid #d7d7d7",
               borderRadius: "5px",
               background: setGrid ? "#292C34" : "",
@@ -155,6 +156,7 @@ function AllValidators() {
 
           <IconButton
             sx={{
+              display: { xs: "none", sm: "flex" },
               border: "2px solid #d7d7d7",
               borderRadius: "5px",
               background: !setGrid ? "#292C34" : "",
@@ -252,7 +254,7 @@ function AllValidators() {
           sx={{
             display: "grid",
             gridTemplateColumns: {
-              xs: "1fr 1fr",
+              xs: "1fr",
               sm: "1fr 1fr 1fr",
               md: "1fr 1fr 1fr 1fr",
             },
