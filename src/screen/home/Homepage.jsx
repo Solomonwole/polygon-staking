@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import appContext from "../../context/AppContext";
 import PreloadPage from "../../components/preloader/PreloadPage";
 import {
@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import { AiOutlineInfoCircle } from "react-icons/ai";
 import AllValidators from "./component/AllValidators";
+import PopModal from "../../components/modal/PopModal";
 
 const overview = [
   { title: "Total Validators", text: "100" },
@@ -48,6 +49,7 @@ const overview = [
 ];
 function Homepage() {
   const { onLoad, setOnLoad } = useContext(appContext);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     const hidePreloader = setTimeout(() => {
@@ -58,8 +60,12 @@ function Homepage() {
       clearTimeout(hidePreloader);
     };
   }, [setOnLoad]);
+
+  const handleModal = () => {
+    setShowModal(true);
+  };
   return (
-    <div>
+    <>
       {onLoad ? (
         <PreloadPage />
       ) : (
@@ -108,7 +114,13 @@ function Homepage() {
                       margin: "0 auto",
                       marginTop: "25px",
                       width: { xs: "100%", sm: "168px" },
+
+                      "&:hover": {
+                        background: "#fff",
+                        color: "#7b3fe4",
+                      },
                     }}
+                    onClick={handleModal}
                   >
                     Become a Delegator
                   </Button>
@@ -192,7 +204,9 @@ function Homepage() {
           </Container>
         </Box>
       )}
-    </div>
+
+      {showModal && <PopModal open={showModal} close={setShowModal} />}
+    </>
   );
 }
 

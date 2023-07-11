@@ -3,7 +3,7 @@ import { createContext, useState } from "react";
 const appContext = createContext();
 
 export function AppContextProvider({ children }) {
-  const [onLoad, setOnLoad] = useState(false);
+  const [onLoad, setOnLoad] = useState(true);
   const [validators, setValidators] = useState([]);
 
   const value = {

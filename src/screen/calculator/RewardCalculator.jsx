@@ -13,6 +13,26 @@ function RewardCalculator() {
   const [matic, setMatic] = useState(10000);
   const [sliderNumber, setSliderNumber] = useState(10);
   const [days, setDays] = useState(365);
+  console.log(days);
+
+  // Calculate Absolute Rewards
+  
+  const absoluteRewards = ((matic * sliderNumber) / 0.34).toFixed(2);
+
+  // Calculate reward frequency in minutes
+  const rewardFrequencyInMinutes = ((24 * 60) / days).toFixed();
+
+  // Calculate Network Share
+  const networkShare = ((matic / absoluteRewards) * 100).toFixed();
+
+  // Calculate Absolute Rewards percentage
+  const absoluteRewardsPercentage = ((absoluteRewards / matic) * 100).toFixed(1);
+
+   // Calculate Current Reward Percentage (CRP)
+   const currentRewardPercentage = (absoluteRewardsPercentage * sliderNumber) / 100;
+
+
+
   return (
     <Box sx={{ width: "100%", overflowX: "hidden", paddingBottom: "30px" }}>
       <Container maxWidth="lg">
@@ -73,10 +93,10 @@ function RewardCalculator() {
 
                 <Stack>
                   <Typography variant="body2" color="#B0B4BB" mt={10}>
-                    Current MATIC tokens staked %: 3.9893%
+                  Current MATIC tokens staked %: 3.9939%
                   </Typography>
                   <Typography variant="body2" color="#B0B4BB" mt={1}>
-                    Current MATIC tokens staked %: 3.9893%
+                  Projected MATIC tokens staked: 2,723,474,651.52
                   </Typography>
                 </Stack>
               </Stack>
@@ -84,7 +104,10 @@ function RewardCalculator() {
               <Box mt={5} mb={5}>
                 <Slider
                   defaultValue={sliderNumber}
-                  getAriaValueText={(value) => String(value)}
+                  getAriaValueText={(value) => {
+                    String(value);
+                    setSliderNumber(value);
+                  }}
                   color="secondary"
                   valueLabelDisplay="auto"
                 />
@@ -129,7 +152,7 @@ function RewardCalculator() {
                   }}
                 />
                 <Typography variant="h1" color="#000" align="center">
-                  609.5451
+                  {absoluteRewards}
                 </Typography>
                 <Typography variant="caption">
                   Absolute Rewards (for 365 days)
@@ -164,7 +187,7 @@ function RewardCalculator() {
                     }}
                   />
                   <Typography variant="h2" color="#000" align="center">
-                    ~6.0955%
+                    ~{currentRewardPercentage}%
                   </Typography>
                   <Typography variant="caption">Absolute Rewards %</Typography>
                 </Stack>
@@ -191,7 +214,7 @@ function RewardCalculator() {
                     }}
                   />
                   <Typography variant="h2" color="#000" align="center">
-                    ~6.0955%
+                    ~{absoluteRewardsPercentage}%
                   </Typography>
                   <Typography variant="caption">
                     Current Reward Percentage % (CRP)
@@ -220,7 +243,7 @@ function RewardCalculator() {
                     }}
                   />
                   <Typography variant="h2" color="#000" align="center">
-                    ~25 Mins
+                    ~{rewardFrequencyInMinutes} Mins
                   </Typography>
                   <Typography variant="caption">Rewards frequency</Typography>
                 </Stack>
@@ -247,7 +270,7 @@ function RewardCalculator() {
                     }}
                   />
                   <Typography variant="h2" color="#000" align="center">
-                    0.0026%
+                    {networkShare}%
                   </Typography>
                   <Typography variant="caption">Your Network Share</Typography>
                 </Stack>

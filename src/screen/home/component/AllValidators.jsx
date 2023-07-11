@@ -19,12 +19,14 @@ import { RxDashboard } from "react-icons/rx";
 import { BsListUl } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
 import appContext from "../../../context/AppContext";
+import PopModal from "../../../components/modal/PopModal";
 
 function AllValidators() {
   const navigate = useNavigate();
   const [setGrid, setSetGrid] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterOption, setFilterOption] = useState(null);
+  const [showModal, setShowModal] = useState(false);
 
   const { validators, setValidators } = useContext(appContext);
 
@@ -38,7 +40,6 @@ function AllValidators() {
         if (response.ok) {
           const data = await response.json();
           setValidators(data.result);
-          console.log("validators: ", validators);
         } else {
           console.log("Error:", response.status);
         }
@@ -48,7 +49,8 @@ function AllValidators() {
     };
 
     fetchData();
-  }, [setValidators, validators]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const formatStakedValue = (value) => {
     const formattedValue = value.toLocaleString(undefined, {
@@ -80,146 +82,265 @@ function AllValidators() {
     }
   });
 
+  const handleModal = () => {
+    setShowModal(true);
+  };
+
   return (
-    <Box
-      sx={{
-        paddingBottom: "30px",
-        background: "#fff",
-        borderRadius: "20px",
-        boxShadow:
-          "0px 12px 8px 0px rgba(0, 0, 0, 0.02), 0px 4px 8px 0px rgba(0, 0, 0, 0.03)",
-        margin: "20px 0",
-      }}
-    >
+    <>
       <Box
         sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          marginBottom: "20px",
-          padding: "20px",
+          paddingBottom: "30px",
+          background: "#fff",
+          borderRadius: "20px",
+          boxShadow:
+            "0px 12px 8px 0px rgba(0, 0, 0, 0.02), 0px 4px 8px 0px rgba(0, 0, 0, 0.03)",
+          margin: "20px 0",
         }}
       >
-        <TextField
-          type="search"
-          placeholder="Search"
-          value={searchQuery}
-          onChange={handleSearchChange}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <FiSearch />
-              </InputAdornment>
-            ),
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            marginBottom: "20px",
+            padding: "20px",
           }}
-        />
-
-        <Stack
-          direction="row"
-          justifyContent="space-between"
-          alignItems="center"
-          spacing={1}
         >
-          <Typography
-            variant="caption"
-            color="#000"
-            sx={{ display: { xs: "none", sm: "flex" } }}
-          >
-            Sort By
-          </Typography>
-          <Autocomplete
-            disablePortal
-            id="combo-box-demo"
-            options={filterDrop}
-            value={filterOption}
-            onChange={handleFilterChange}
-            sx={{ width: { xs: 100, sm: 300 }, textTransform: "capitalize" }}
-            renderInput={(params) => <TextField {...params} label="filter" />}
+          <TextField
+            type="search"
+            placeholder="Search"
+            value={searchQuery}
+            onChange={handleSearchChange}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <FiSearch />
+                </InputAdornment>
+              ),
+            }}
           />
 
-          <IconButton
-            sx={{
-              display: { xs: "none", sm: "flex" },
-              border: "2px solid #d7d7d7",
-              borderRadius: "5px",
-              background: setGrid ? "#292C34" : "",
-              color: setGrid ? "#fff" : "",
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            alignItems="center"
+            spacing={1}
+          >
+            <Typography
+              variant="caption"
+              color="#000"
+              sx={{ display: { xs: "none", sm: "flex" } }}
+            >
+              Sort By
+            </Typography>
+            <Autocomplete
+              disablePortal
+              id="combo-box-demo"
+              options={filterDrop}
+              value={filterOption}
+              onChange={handleFilterChange}
+              sx={{ width: { xs: 100, sm: 300 }, textTransform: "capitalize" }}
+              renderInput={(params) => <TextField {...params} label="filter" />}
+            />
 
-              "&:hover": {
+            <IconButton
+              sx={{
+                display: { xs: "none", sm: "flex" },
+                border: "2px solid #d7d7d7",
+                borderRadius: "5px",
                 background: setGrid ? "#292C34" : "",
                 color: setGrid ? "#fff" : "",
-              },
-            }}
-            onClick={() => setSetGrid(true)}
-          >
-            <RxDashboard />
-          </IconButton>
 
-          <IconButton
-            sx={{
-              display: { xs: "none", sm: "flex" },
-              border: "2px solid #d7d7d7",
-              borderRadius: "5px",
-              background: !setGrid ? "#292C34" : "",
-              color: !setGrid ? "#fff" : "",
+                "&:hover": {
+                  background: setGrid ? "#292C34" : "",
+                  color: setGrid ? "#fff" : "",
+                },
+              }}
+              onClick={() => setSetGrid(true)}
+            >
+              <RxDashboard />
+            </IconButton>
 
-              "&:hover": {
+            <IconButton
+              sx={{
+                display: { xs: "none", sm: "flex" },
+                border: "2px solid #d7d7d7",
+                borderRadius: "5px",
                 background: !setGrid ? "#292C34" : "",
                 color: !setGrid ? "#fff" : "",
+
+                "&:hover": {
+                  background: !setGrid ? "#292C34" : "",
+                  color: !setGrid ? "#fff" : "",
+                },
+              }}
+              onClick={() => setSetGrid(false)}
+            >
+              <BsListUl />
+            </IconButton>
+          </Stack>
+        </Box>
+
+        {!setGrid && (
+          <Box>
+            <Table stickyHeader>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Name</TableCell>
+                  <TableCell>Stake</TableCell>
+                  <TableCell>Commission</TableCell>
+                  <TableCell>Checkpoints Signed</TableCell>
+                  <TableCell></TableCell>
+                </TableRow>
+              </TableHead>
+
+              <TableBody>
+                {filteredValidators.map((validator, index) => (
+                  <TableRow
+                    key={validator.id}
+                    onClick={() => {
+                      navigate("");
+                      handleModal();
+                    }}
+                    sx={{ cursor: "pointer" }}
+                  >
+                    <TableCell>
+                      <Stack direction="row" alignItems="center">
+                        <img
+                          src="https://staking.polygon.technology/assets/img/profile.svg"
+                          alt=""
+                          style={{
+                            marginRight: "10px",
+                          }}
+                        />
+                        {validator.name || `Anonymous 3${index}`}
+                      </Stack>
+                    </TableCell>
+                    <TableCell>
+                      {formatStakedValue(validator.totalStaked)} &nbsp;
+                      <Typography
+                        component="span"
+                        sx={{
+                          color: "#b0b4bb",
+                        }}
+                      >
+                        MATIC
+                      </Typography>
+                    </TableCell>
+                    <TableCell>{validator.commissionPercent}%</TableCell>
+                    <TableCell>{validator.uptimePercent}%</TableCell>
+                    <TableCell>
+                      {validator.uptimePercent !== 0 ? (
+                        <Button
+                          variant="contained"
+                          sx={{
+                            background: "#F7F7F8",
+                            color: "#c9c9c9",
+                            boxShadow: "none",
+                          }}
+                        >
+                          Delegate
+                        </Button>
+                      ) : (
+                        <Typography
+                          sx={{
+                            color: "#f00",
+                          }}
+                        >
+                          Offline since
+                          <br /> 2100 checkpoints
+                        </Typography>
+                      )}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </Box>
+        )}
+
+        {setGrid && (
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns: {
+                xs: "1fr",
+                sm: "1fr 1fr 1fr",
+                md: "1fr 1fr 1fr 1fr",
               },
             }}
-            onClick={() => setSetGrid(false)}
           >
-            <BsListUl />
-          </IconButton>
-        </Stack>
-      </Box>
-
-      {!setGrid && (
-        <Box>
-          <Table stickyHeader>
-            <TableHead>
-              <TableRow>
-                <TableCell>Name</TableCell>
-                <TableCell>Stake</TableCell>
-                <TableCell>Commission</TableCell>
-                <TableCell>Checkpoints Signed</TableCell>
-                <TableCell></TableCell>
-              </TableRow>
-            </TableHead>
-
-            <TableBody>
-              {filteredValidators.map((validator, index) => (
-                <TableRow
-                  key={validator.id}
-                  onClick={() => navigate("")}
-                  sx={{ cursor: "pointer" }}
-                >
-                  <TableCell>
-                    <Stack direction="row" alignItems="center">
-                      <img
-                        src="https://staking.polygon.technology/assets/img/profile.svg"
-                        alt=""
-                        style={{
-                          marginRight: "10px",
-                        }}
-                      />
-                      {validator.name || `Anonymous 3${index}`}
-                    </Stack>
-                  </TableCell>
-                  <TableCell>
-                    {formatStakedValue(validator.totalStaked)} &nbsp;
-                    <Typography
-                      component="span"
-                      sx={{
-                        color: "#b0b4bb",
+            {filteredValidators.map((validator, index) => (
+              <Box
+                key={validator.id}
+                sx={{
+                  border: "0.1px solid #dcdcdc99",
+                  padding: "20px",
+                  cursor: "pointer",
+                }}
+                onClick={() => {
+                  navigate("");
+                  handleModal();
+                }}
+              >
+                <Stack spacing={3}>
+                  <Stack spacing={1}>
+                    <img
+                      src="https://staking.polygon.technology/assets/img/profile.svg"
+                      alt=""
+                      style={{
+                        marginRight: "10px",
+                        height: "64px",
+                        width: "64px",
                       }}
-                    >
-                      MATIC
+                    />
+                    <Typography variant="h4">
+                      {validator.name || `Anonymous 3${index}`}
                     </Typography>
-                  </TableCell>
-                  <TableCell>{validator.commissionPercent}%</TableCell>
-                  <TableCell>{validator.uptimePercent}%</TableCell>
-                  <TableCell>
+                    <Typography variant="body2">
+                      {formatStakedValue(validator.totalStaked)} &nbsp;{" "}
+                      <Typography
+                        component="span"
+                        sx={{
+                          color: "#b0b4bb",
+                        }}
+                      >
+                        MATIC
+                      </Typography>
+                    </Typography>
+                  </Stack>
+
+                  <Stack>
+                    <Stack
+                      direction="row"
+                      justifyContent="space-between"
+                      alignItems="center"
+                    >
+                      <Typography>Commission</Typography>
+                      <Typography sx={{ color: "#319a8d" }}>
+                        {validator.commissionPercent}%
+                      </Typography>
+                    </Stack>
+                    <Stack
+                      direction="row"
+                      justifyContent="space-between"
+                      alignItems="center"
+                    >
+                      <Typography>Checkpoints Signed</Typography>
+                      <Typography sx={{ color: "#6433b9" }}>
+                        {validator.uptimePercent}%
+                      </Typography>
+                    </Stack>
+                  </Stack>
+
+                  <Box
+                    sx={{
+                      width: "100%",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
                     {validator.uptimePercent !== 0 ? (
                       <Button
                         variant="contained"
@@ -227,6 +348,7 @@ function AllValidators() {
                           background: "#F7F7F8",
                           color: "#c9c9c9",
                           boxShadow: "none",
+                          width: "100%",
                         }}
                       >
                         Delegate
@@ -241,117 +363,16 @@ function AllValidators() {
                         <br /> 2100 checkpoints
                       </Typography>
                     )}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </Box>
-      )}
-
-      {setGrid && (
-        <Box
-          sx={{
-            display: "grid",
-            gridTemplateColumns: {
-              xs: "1fr",
-              sm: "1fr 1fr 1fr",
-              md: "1fr 1fr 1fr 1fr",
-            },
-          }}
-        >
-          {filteredValidators.map((validator, index) => (
-            <Box
-              key={validator.id}
-              sx={{ border: "0.1px solid #dcdcdc99", padding: "20px" }}
-            >
-              <Stack spacing={3}>
-                <Stack spacing={1}>
-                  <img
-                    src="https://staking.polygon.technology/assets/img/profile.svg"
-                    alt=""
-                    style={{
-                      marginRight: "10px",
-                      height: "64px",
-                      width: "64px",
-                    }}
-                  />
-                  <Typography variant="h4">
-                    {validator.name || `Anonymous 3${index}`}
-                  </Typography>
-                  <Typography variant="body2">
-                    {formatStakedValue(validator.totalStaked)} &nbsp;{" "}
-                    <Typography
-                      component="span"
-                      sx={{
-                        color: "#b0b4bb",
-                      }}
-                    >
-                      MATIC
-                    </Typography>
-                  </Typography>
+                  </Box>
                 </Stack>
+              </Box>
+            ))}
+          </Box>
+        )}
+      </Box>
 
-                <Stack>
-                  <Stack
-                    direction="row"
-                    justifyContent="space-between"
-                    alignItems="center"
-                  >
-                    <Typography>Commission</Typography>
-                    <Typography sx={{ color: "#319a8d" }}>
-                      {validator.commissionPercent}%
-                    </Typography>
-                  </Stack>
-                  <Stack
-                    direction="row"
-                    justifyContent="space-between"
-                    alignItems="center"
-                  >
-                    <Typography>Checkpoints Signed</Typography>
-                    <Typography sx={{ color: "#6433b9" }}>
-                      {validator.uptimePercent}%
-                    </Typography>
-                  </Stack>
-                </Stack>
-
-                <Box
-                  sx={{
-                    width: "100%",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  {validator.uptimePercent !== 0 ? (
-                    <Button
-                      variant="contained"
-                      sx={{
-                        background: "#F7F7F8",
-                        color: "#c9c9c9",
-                        boxShadow: "none",
-                        width: "100%",
-                      }}
-                    >
-                      Delegate
-                    </Button>
-                  ) : (
-                    <Typography
-                      sx={{
-                        color: "#f00",
-                      }}
-                    >
-                      Offline since
-                      <br /> 2100 checkpoints
-                    </Typography>
-                  )}
-                </Box>
-              </Stack>
-            </Box>
-          ))}
-        </Box>
-      )}
-    </Box>
+      {showModal && <PopModal open={showModal} close={setShowModal} />}
+    </>
   );
 }
 

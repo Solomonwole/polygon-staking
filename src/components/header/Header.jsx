@@ -13,11 +13,13 @@ import { Link, NavLink } from "react-router-dom";
 import appContext from "../../context/AppContext";
 import { AiOutlineClose } from "react-icons/ai";
 import { IoMenu } from "react-icons/io5";
+import PopModal from "../modal/PopModal";
 
 function Header() {
   const [menu, setMenu] = useState(false);
   const { onLoad, setOnLoad } = useContext(appContext);
   const [btnText, setBtnText] = useState(localStorage.getItem("btnText"));
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     const hidePreloader = setTimeout(() => {
@@ -40,8 +42,13 @@ function Header() {
   };
 
   const handleMenu = () => {
-    setMenu(false);
+    setMenu(true);
   };
+
+  const handleModal = () => {
+    setShowModal(true);
+  };
+  
   return (
     <>
       {onLoad ? (
@@ -133,7 +140,9 @@ function Header() {
                       &nbsp;
                       {btnText}
                     </Button>
-                    <Button variant="contained">Login</Button>
+                    <Button variant="contained" onClick={handleModal}>
+                      Login
+                    </Button>
                   </Stack>
                 </Box>
 
@@ -143,13 +152,10 @@ function Header() {
                   color="inherit"
                   aria-label="menu"
                   sx={{ display: { sm: "none" } }}
+                  onClick={() => setMenu(true)}
                 >
                   {!menu ? (
-                    <IoMenu
-                      fontSize="35px"
-                      color="#000"
-                      onClick={() => setMenu(true)}
-                    />
+                    <IoMenu fontSize="35px" color="#000" />
                   ) : (
                     <AiOutlineClose
                       color="#000"
@@ -247,7 +253,11 @@ function Header() {
                   &nbsp;
                   {btnText}
                 </Button>
-                <Button variant="contained" sx={{ width: "184px" }}>
+                <Button
+                  variant="contained"
+                  sx={{ width: "184px" }}
+                  onClick={handleModal}
+                >
                   Login
                 </Button>
               </Stack>
@@ -322,6 +332,8 @@ function Header() {
           )}
         </Box>
       )}
+
+      {showModal && <PopModal open={showModal} close={setShowModal} />}
     </>
   );
 }

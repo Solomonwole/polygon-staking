@@ -5,6 +5,7 @@ import Header from "../components/header/Header";
 import { AppContextProvider } from "../context/AppContext";
 import RewardCalculator from "../screen/calculator/RewardCalculator";
 import Validators from "../screen/validators/Validators";
+import Footer from "../components/footer/Footer";
 
 function PageRoutes() {
   return (
@@ -16,7 +17,7 @@ function PageRoutes() {
           <Route path="/rewards-calculator" element={<RewardCalculator />} />
           <Route path="/validators" element={<Validators />} />
         </Routes>
-        {/* <Footer /> */}
+        <Footer />
       </Router>
     </AppContextProvider>
   );
